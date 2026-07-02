@@ -1,0 +1,84 @@
+# =========================
+# Dependencies
+# =========================
+node_modules/
+
+# pnpm
+.pnpm-store/
+
+# npm
+npm-debug.log*
+
+# Yarn
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# Next.js
+# =========================
+.next/
+out/
+
+# =========================
+# Build Output
+# =========================
+dist/
+build/
+coverage/
+
+# =========================
+# Environment Variables
+# =========================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Keep example env files
+!.env.example
+
+# =========================
+# Logs
+# =========================
+logs/
+*.log
+
+# =========================
+# TypeScript
+# =========================
+*.tsbuildinfo
+
+# =========================
+# IDEs
+# =========================
+.vscode/
+.idea/
+
+# =========================
+# OS Files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Temporary Files
+# =========================
+tmp/
+temp/
+.cache/
+
+# =========================
+# TurboRepo
+# =========================
+.turbo/
+
+# =========================
+# ESLint Cache
+# =========================
+.eslintcache
+
+# =========================
+# Miscellaneous
+# =========================
+.vercel
