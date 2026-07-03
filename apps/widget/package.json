@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "esbuild src/index.js --bundle --outfile=dist/widget.js --minify"
+    "build": "esbuild src/index.js --bundle --format=iife --global-name=NombaLensBundle --outfile=dist/widget.js --minify",
+    "dev": "esbuild src/index.js --bundle --format=iife --global-name=NombaLensBundle --outfile=dist/widget.js --minify --watch"
   },
   "keywords": [],
   "author": "Gordian Okon",
