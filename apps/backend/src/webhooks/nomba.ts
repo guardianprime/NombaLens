@@ -16,16 +16,24 @@ export async function handleNombaWebhook(req: Request, res: Response): Promise<v
     event?: string;
     data?: {
       merchant_id?: string;
+      merchantId?: string;
       order_id?: string;
+      orderId?: string;
       customer_email?: string;
+      customerEmail?: string;
       amount?: number;
       currency?: string;
       payment_method?: string;
+      paymentMethod?: string;
     };
   };
 
   const eventName = event.event;
   const payload = event.data ?? {};
+  const merchantId = payload.merchant_id ?? payload.merchantId ?? "";
+  const orderId = payload.order_id ?? payload.orderId ?? "";
+  const customerEmail = payload.customer_email ?? payload.customerEmail;
+  const paymentMethod = payload.payment_method ?? payload.paymentMethod;
 
   if (eventName === "checkout_created") {
     const checkoutInput: {
@@ -35,13 +43,13 @@ export async function handleNombaWebhook(req: Request, res: Response): Promise<v
       amount: number;
       currency?: string;
     } = {
-      merchantId: payload.merchant_id ?? "",
-      nombaOrderId: payload.order_id ?? "",
+      merchantId,
+      nombaOrderId: orderId,
       amount: payload.amount ?? 0,
     };
 
-    if (payload.customer_email) {
-      checkoutInput.customerEmail = payload.customer_email;
+    if (customerEmail) {
+      checkoutInput.customerEmail = customerEmail;
     }
 
     if (payload.currency) {
@@ -52,12 +60,13 @@ export async function handleNombaWebhook(req: Request, res: Response): Promise<v
     await createConversionEvent({
       merchantId: session.merchantId,
       sessionId: session.id,
-      paymentMethod: payload.payment_method ?? null,
+      paymentMethod: paymentMethod ?? null,
       eventType: "created",
     });
 
     if (session.customerEmail) {
-      const scheduledAt = new Date(Date.now() + 1000 * 60 * 15);
+      const recoveryMinutes = Number(process.env.RECOVERY_TIMEOUT_MINUTES ?? 15);
+      const scheduledAt = new Date(Date.now() + 1000 * 60 * recoveryMinutes);
       await enqueueRecoveryJob(session.id, session.nombaOrderId, scheduledAt);
     }
 
@@ -66,7 +75,6 @@ export async function handleNombaWebhook(req: Request, res: Response): Promise<v
   }
 
   if (eventName === "payment_success") {
-    const orderId = payload.order_id;
     if (orderId) {
       const session = await getSessionByOrderId(orderId);
       if (session) {
@@ -80,7 +88,7 @@ export async function handleNombaWebhook(req: Request, res: Response): Promise<v
         await createConversionEvent({
           merchantId: session.merchantId,
           sessionId: session.id,
-          paymentMethod: payload.payment_method ?? null,
+          paymentMethod: paymentMethod ?? null,
           eventType: isRecovered ? "recovered" : "completed",
         });
       }
@@ -91,9 +99,10 @@ export async function handleNombaWebhook(req: Request, res: Response): Promise<v
   }
 
   if (eventName === "payment_failed") {
-    const pendingSession = payload.order_id ? await getPendingSessionByOrderId(payload.order_id) : null;
+    const pendingSession = orderId ? await getPendingSessionByOrderId(orderId) : null;
     if (pendingSession && pendingSession.customerEmail && !(await hasRecoveryJobForSession(pendingSession.id))) {
-      const scheduledAt = new Date(Date.now() + 1000 * 60 * 15);
+      const recoveryMinutes = Number(process.env.RECOVERY_TIMEOUT_MINUTES ?? 15);
+      const scheduledAt = new Date(Date.now() + 1000 * 60 * recoveryMinutes);
       await enqueueRecoveryJob(pendingSession.id, pendingSession.nombaOrderId, scheduledAt);
     }
     res.status(202).json({ success: true, pendingSession });

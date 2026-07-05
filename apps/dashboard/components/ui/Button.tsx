@@ -1,13 +1,13 @@
-import type { ButtonHTMLAttributes } from "react";
+import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 export function Button({
   children,
   className = "",
   ...props
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
-} & ButtonHTMLAttributes<HTMLButtonElement>) {
+}> & ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
       type="button"

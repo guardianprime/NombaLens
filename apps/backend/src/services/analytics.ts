@@ -108,12 +108,17 @@ export async function getAnalyticsTimeseries(
       continue;
     }
 
-    counts[index].orders += 1;
+    const currentCount = counts[index];
+    if (!currentCount) {
+      continue;
+    }
+
+    currentCount.orders += 1;
     if (session.status === "completed" || session.status === "recovered") {
-      counts[index].completions += 1;
+      currentCount.completions += 1;
     }
     if (session.status === "recovered") {
-      counts[index].recoveries += 1;
+      currentCount.recoveries += 1;
     }
   }
 

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>NombaLens Widget Test</title>
+    <style>
+      body { font-family: sans-serif; padding: 2rem; }
+      .box { border: 1px solid #ccc; padding: 1rem; margin: 1rem 0; }
+      code { display: block; margin-top: 0.5rem; white-space: pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <h1>Widget smoke test</h1>
+    <div class="box">
+      <div data-payment-method="card">Card</div>
+      <div data-payment-method="bankTransfer">Bank Transfer</div>
+      <div data-payment-method="ussd">USSD</div>
+      <div data-payment-method="qr">QR Code</div>
+    </div>
+
+    <div class="box" id="status">Waiting for suggestion…</div>
+
+    <script src="./dist/widget.js"></script>
+    <script>
+      window.addEventListener("load", () => {
+        window.NombaLens.init({
+          merchantId: "test-merchant",
+          apiUrl: "http://localhost:4000",
+          debug: true,
+        });
+
+        setTimeout(() => {
+          const paymentMethodElements = Array.from(document.querySelectorAll("[data-payment-method]"));
+          const currentOrder = paymentMethodElements
+            .map((element) => element.getAttribute("data-payment-method"))
+            .filter(Boolean);
+          const defaultOrder = ["card", "bankTransfer", "ussd", "qr"];
+          const result = document.getElementById("status");
+
+          const message = currentOrder.length > 0 && currentOrder.join(",") !== defaultOrder.join(",")
+            ? `Suggestion received: [${currentOrder.join(", ")}]`
+            : "No suggestion received — default order used";
+
+          result.textContent = message;
+        }, 2000);
+      });
+    </script>
+  </body>
+</html>

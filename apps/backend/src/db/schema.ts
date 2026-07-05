@@ -8,6 +8,8 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
+export { db } from "./client.js";
+
 export const checkoutSessionStatusEnum = pgEnum("checkout_session_status", [
   "pending",
   "completed",

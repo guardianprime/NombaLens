@@ -3,6 +3,42 @@ import { checkoutSessions, recoveryJobs, conversionEvents } from "../db/schema.j
 import { recoveryQueue } from "../jobs/recoveryQueue.js";
 import { eq, and } from "drizzle-orm";
 
+async function ensureMerchantId(merchantId: string): Promise<string> {
+  const normalizedMerchantId = merchantId.trim();
+  if (!normalizedMerchantId) {
+    return "00000000-0000-0000-0000-000000000000";
+  }
+
+  if (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(normalizedMerchantId)) {
+    const [existingMerchant] = await db
+      .select({ id: (await import("../db/schema.js")).merchants.id })
+      .from((await import("../db/schema.js")).merchants)
+      .where(eq((await import("../db/schema.js")).merchants.id, normalizedMerchantId))
+      .limit(1);
+
+    if (existingMerchant) {
+      return normalizedMerchantId;
+    }
+
+    await db.insert((await import("../db/schema.js")).merchants).values({
+      id: normalizedMerchantId,
+      nombaClientId: normalizedMerchantId,
+      nombaSecret: normalizedMerchantId,
+    });
+
+    return normalizedMerchantId;
+  }
+
+  const fallbackId = crypto.randomUUID();
+  await db.insert((await import("../db/schema.js")).merchants).values({
+    id: fallbackId,
+    nombaClientId: normalizedMerchantId,
+    nombaSecret: normalizedMerchantId,
+  });
+
+  return fallbackId;
+}
+
 export interface RecoveryEmailPayload {
   to: string;
   subject: string;
@@ -29,10 +65,12 @@ export async function createCheckoutSession(input: {
   amount: number;
   currency?: string;
 }): Promise<CheckoutSessionRecord> {
+  const merchantId = await ensureMerchantId(input.merchantId);
+
   const [session] = await db
     .insert(checkoutSessions)
     .values({
-      merchantId: input.merchantId,
+      merchantId,
       nombaOrderId: input.nombaOrderId,
       customerEmail: input.customerEmail ?? null,
       amount: input.amount,
@@ -64,8 +102,10 @@ export async function createConversionEvent(input: {
   paymentMethod?: string | null;
   eventType: ConversionEventType;
 }): Promise<void> {
+  const merchantId = await ensureMerchantId(input.merchantId);
+
   await db.insert(conversionEvents).values({
-    merchantId: input.merchantId,
+    merchantId,
     sessionId: input.sessionId ?? null,
     paymentMethod: input.paymentMethod ?? null,
     eventType: input.eventType,

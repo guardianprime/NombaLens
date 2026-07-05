@@ -34,7 +34,7 @@ export function MethodBreakdown({ card, bankTransfer, ussd, qr }: MethodBreakdow
             <CartesianGrid stroke="#e2e8f0" strokeDasharray="4 4" vertical={false} />
             <XAxis dataKey="method" tick={{ fill: "#64748b", fontSize: 12 }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fill: "#64748b", fontSize: 12 }} axisLine={false} tickLine={false} />
-            <Tooltip formatter={(value: number) => value.toString()} />
+            <Tooltip formatter={(value: unknown) => String(value ?? "")} />
             <Bar dataKey="value" fill="#ef4444" radius={[10, 10, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>

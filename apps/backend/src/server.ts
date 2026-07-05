@@ -6,6 +6,8 @@ import cookieParser from "cookie-parser";
 import { pathToFileURL } from "node:url";
 
 import routes from "./routes/index.js";
+import { healthHandler } from "./routes/health.js";
+import widgetRoutes from "./routes/widget.routes.js";
 import { startRecoveryWorker } from "./jobs/recoveryJob.js";
 
 function initializeMiddleware(app: Express): void {
@@ -16,6 +18,8 @@ function initializeMiddleware(app: Express): void {
 
 function initializeRoutes(app: Express): void {
   app.get("/", homeHandler);
+  app.get("/health", healthHandler);
+  app.use("/widget", widgetRoutes);
   app.use("/api/v1", routes);
 }
 

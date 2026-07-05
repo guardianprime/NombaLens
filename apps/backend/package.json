@@ -7,9 +7,16 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/server.js",
-    "dev": "nodemon --exec tsx src/server.ts",
+    "dev": "tsx watch src/server.ts",
     "watch": "tsc -w",
-    "test": "jest --config jest.config.js"
+    "test": "jest --config jest.config.js",
+    "check:env": "tsx src/scripts/checkEnv.ts",
+    "check:db": "tsx src/scripts/checkDb.ts",
+    "check:redis": "tsx src/scripts/checkRedis.ts",
+    "check:nomba": "tsx src/scripts/checkNomba.ts",
+    "db:migrate": "drizzle-kit migrate",
+    "test:webhook": "tsx src/scripts/testWebhook.ts",
+    "test:recovery": "tsx src/scripts/testRecovery.ts"
   },
   "keywords": [],
   "author": "Gordian Okon",

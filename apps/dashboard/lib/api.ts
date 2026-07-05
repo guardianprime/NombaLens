@@ -1,4 +1,4 @@
-import type { ConversionStats, RecoverySession, SplitConfig, TimeseriesData } from "../types/index";
+import type { Alert, ConversionStats, RecoverySession, SplitConfig, TimeseriesData } from "../types/index";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 

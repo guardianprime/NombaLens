@@ -61,6 +61,24 @@ export function reorderMethods(candidates, log) {
     return a.id.localeCompare(b.id);
   });
 
+  const paymentMethodElements = Array.from(document.querySelectorAll("[data-payment-method]"));
+  paymentMethodElements.forEach((element) => {
+    const methodId = element.getAttribute("data-payment-method");
+    if (!methodId) {
+      return;
+    }
+
+    const index = sorted.findIndex((candidate) => candidate.id === methodId);
+    if (index === -1) {
+      return;
+    }
+
+    const target = paymentMethodElements[index];
+    if (target && target !== element) {
+      target.parentNode?.insertBefore(element, target);
+    }
+  });
+
   const form = document.querySelector("form[action*='/checkout']");
   if (!form) {
     log("Checkout form not found on page.");

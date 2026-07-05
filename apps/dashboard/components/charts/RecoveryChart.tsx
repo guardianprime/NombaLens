@@ -30,7 +30,7 @@ export function RecoveryChart({ dates, recoveries }: RecoveryChartProps) {
             <CartesianGrid stroke="#e2e8f0" strokeDasharray="4 4" vertical={false} />
             <XAxis dataKey="date" tick={{ fill: "#64748b", fontSize: 12 }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fill: "#64748b", fontSize: 12 }} axisLine={false} tickLine={false} />
-            <Tooltip formatter={(value: number) => value.toString()} />
+            <Tooltip formatter={(value: unknown) => String(value ?? "")} />
             <Area type="monotone" dataKey="recoveries" stroke="#f59e0b" fill="#fef3c7" fillOpacity={0.7} />
           </AreaChart>
         </ResponsiveContainer>

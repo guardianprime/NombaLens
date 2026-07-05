@@ -35,7 +35,7 @@ export function ConversionChart({ dates, orders, completions, recoveries }: Conv
             <CartesianGrid stroke="#e2e8f0" strokeDasharray="4 4" vertical={false} />
             <XAxis dataKey="date" tick={{ fill: "#64748b", fontSize: 12 }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fill: "#64748b", fontSize: 12 }} axisLine={false} tickLine={false} />
-            <Tooltip formatter={(value: number) => value.toString()} />
+            <Tooltip formatter={(value: unknown) => String(value ?? "")} />
             <Legend wrapperStyle={{ paddingTop: 12 }} />
             <Line type="monotone" dataKey="orders" stroke="#6366f1" strokeWidth={3} dot={false} />
             <Line type="monotone" dataKey="completions" stroke="#10b981" strokeWidth={3} dot={false} />
