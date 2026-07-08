@@ -1,7 +1,6 @@
 import { Queue } from "bullmq";
-import * as Redis from "ioredis";
+import { redis } from "../lib/redis.js";
 
-const RedisClient = (Redis as unknown as { default: new (url?: string) => unknown }).default;
 const queueName = "recovery-jobs";
 
 class NoopQueue {
@@ -13,10 +12,13 @@ class NoopQueue {
 let recoveryQueueInstance: Queue | NoopQueue;
 
 try {
-  const connection = new RedisClient(process.env.REDIS_URL ?? "redis://localhost:6379") as any;
+  const connection = redis;
   recoveryQueueInstance = new Queue(queueName, { connection });
 } catch (error) {
-  console.warn("Recovery queue disabled:", error instanceof Error ? error.message : String(error));
+  console.warn(
+    "Recovery queue disabled:",
+    error instanceof Error ? error.message : String(error),
+  );
   recoveryQueueInstance = new NoopQueue();
 }
 

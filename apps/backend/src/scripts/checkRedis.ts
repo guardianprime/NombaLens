@@ -1,10 +1,10 @@
 import "dotenv/config";
+import { redis } from "../lib/redis.js";
 
 import * as Redis from "ioredis";
 
 async function main(): Promise<void> {
-  const RedisClient = (Redis as unknown as { default: new (url?: string) => unknown }).default;
-  const client = new RedisClient(process.env.REDIS_URL ?? "redis://localhost:6379") as any;
+  const client = redis;
 
   try {
     const result = await client.ping();

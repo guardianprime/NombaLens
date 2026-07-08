@@ -4,6 +4,8 @@
     // File Layout
     "rootDir": "./src",
     "outDir": "./dist",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
 
     "module": "nodenext",
     "target": "esnext",

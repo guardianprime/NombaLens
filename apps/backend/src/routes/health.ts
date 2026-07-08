@@ -1,6 +1,5 @@
 import type { Request, Response } from "express";
-import * as Redis from "ioredis";
-
+import { redis } from "../lib/redis.js";
 import { db } from "../db/client.js";
 
 async function checkDatabase(): Promise<"ok" | "error"> {
@@ -13,8 +12,7 @@ async function checkDatabase(): Promise<"ok" | "error"> {
 }
 
 async function checkRedis(): Promise<"ok" | "error"> {
-  const RedisClient = (Redis as unknown as { default: new (url?: string) => unknown }).default;
-  const client = new RedisClient(process.env.REDIS_URL ?? "redis://localhost:6379") as any;
+  const client = redis;
 
   try {
     const result = await client.ping();
@@ -36,21 +34,32 @@ async function checkNomba(): Promise<"ok" | "error"> {
   }
 
   try {
-    const authUrl = new URL("auth/token", baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`);
+    const authUrl = new URL(
+      "auth/token",
+      baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`,
+    );
     const response = await fetch(authUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ client_id: clientId, client_secret: clientSecret }),
+      body: JSON.stringify({
+        client_id: clientId,
+        client_secret: clientSecret,
+      }),
     });
 
-    const payload = (await response.json().catch(() => ({}))) as { access_token?: string };
+    const payload = (await response.json().catch(() => ({}))) as {
+      access_token?: string;
+    };
     return response.ok && Boolean(payload.access_token) ? "ok" : "error";
   } catch {
     return "error";
   }
 }
 
-export async function healthHandler(req: Request, res: Response): Promise<void> {
+export async function healthHandler(
+  req: Request,
+  res: Response,
+): Promise<void> {
   const [database, redis, nomba] = await Promise.allSettled([
     checkDatabase(),
     checkRedis(),
