@@ -1,4 +1,10 @@
-import type { Alert, ConversionStats, RecoverySession, SplitConfig, TimeseriesData } from "../types/index";
+import type {
+  Alert,
+  ConversionStats,
+  RecoverySession,
+  SplitConfig,
+  TimeseriesData,
+} from "../types/index";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -13,34 +19,55 @@ async function fetchJson<T>(path: string): Promise<T> {
   const url = `${requireApiUrl()}${path}`;
   const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) {
-    throw new Error(`Failed to fetch ${path}`);
+    /* throw new Error(`Failed to fetch ${path}`); */
+    throw new Error(
+      `Request failed:
+URL: ${url}
+Status: ${res.status}
+Body: ${res.body}`,
+    );
   }
   return (await res.json()) as T;
 }
 
-export async function getConversionStats(merchantId: string): Promise<ConversionStats> {
-  const result = await fetchJson<{ success: boolean; data: ConversionStats }>(`/api/analytics/${merchantId}`);
+export async function getConversionStats(
+  merchantId: string,
+): Promise<ConversionStats> {
+  const result = await fetchJson<{ success: boolean; data: ConversionStats }>(
+    `/api/v1/analytics/${merchantId}`,
+  );
   return result.data;
 }
 
-export async function getTimeseries(merchantId: string, range: "7d" | "30d"): Promise<TimeseriesData> {
-  const result = await fetchJson<{ success: boolean; data: TimeseriesData }>(`/api/analytics/${merchantId}/timeseries?range=${range}`);
+export async function getTimeseries(
+  merchantId: string,
+  range: "7d" | "30d",
+): Promise<TimeseriesData> {
+  const result = await fetchJson<{ success: boolean; data: TimeseriesData }>(
+    `/api/v1/analytics/${merchantId}/timeseries?range=${range}`,
+  );
   return result.data;
 }
 
-export async function getRecoverySessions(merchantId: string): Promise<{ sessions: RecoverySession[] }> {
-  return fetchJson<{ sessions: RecoverySession[] }>(`/api/recovery/${merchantId}`);
+export async function getRecoverySessions(
+  merchantId: string,
+): Promise<{ sessions: RecoverySession[] }> {
+  return fetchJson<{ sessions: RecoverySession[] }>(
+    `/api/v1/recovery/${merchantId}`,
+  );
 }
 
-export async function getSplitConfig(merchantId: string): Promise<{ configs: SplitConfig[] }> {
-  return fetchJson<{ configs: SplitConfig[] }>(`/api/split/${merchantId}`);
+export async function getSplitConfig(
+  merchantId: string,
+): Promise<{ configs: SplitConfig[] }> {
+  return fetchJson<{ configs: SplitConfig[] }>(`/api/v1/split/${merchantId}`);
 }
 
 export async function saveSplitConfig(
   merchantId: string,
   configs: Array<Pick<SplitConfig, "subAccountId" | "percentage">>,
 ): Promise<{ success: boolean }> {
-  const url = `${requireApiUrl()}/api/split/${merchantId}`;
+  const url = `${requireApiUrl()}/api/v1/split/${merchantId}`;
   const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -55,6 +82,8 @@ export async function saveSplitConfig(
   return (await res.json()) as { success: boolean };
 }
 
-export async function getAlerts(merchantId: string): Promise<{ alerts: Alert[] }> {
-  return fetchJson<{ alerts: Alert[] }>(`/api/alerts/${merchantId}`);
+export async function getAlerts(
+  merchantId: string,
+): Promise<{ alerts: Alert[] }> {
+  return fetchJson<{ alerts: Alert[] }>(`/api/v1/alerts/${merchantId}`);
 }

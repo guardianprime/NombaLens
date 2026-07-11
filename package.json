@@ -11,10 +11,16 @@
   "scripts": {
     "dev:backend": "pnpm --filter backend dev",
     "dev:dashboard": "pnpm --filter dashboard dev",
-    "dev": "pnpm run dev:backend & pnpm run dev:dashboard"
+    "dev": "concurrently \"pnpm run dev:backend\" \"pnpm run dev:dashboard\""
   },
   "keywords": [],
   "author": "Gordian Okon",
   "license": "ISC",
-  "packageManager": "pnpm@10.32.1"
+  "packageManager": "pnpm@10.32.1",
+  "dependencies": {
+    "@anthropic-ai/claude-code": "^2.1.204"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.3"
+  }
 }

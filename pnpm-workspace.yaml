@@ -1,3 +1,9 @@
 packages:
   - "apps/*"
   - "packages/*"
+allowBuilds:
+  '@anthropic-ai/claude-code': true
+  esbuild: false
+  msgpackr-extract: true
+  sharp: true
+  unrs-resolver: true

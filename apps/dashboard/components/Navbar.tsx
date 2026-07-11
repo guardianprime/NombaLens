@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getAlerts } from "../lib/api";
 
 const merchantId = process.env.NEXT_PUBLIC_MERCHANT_ID ?? "";
@@ -10,22 +11,36 @@ export default async function Navbar() {
     <header className="border-b border-slate-200 bg-white/95 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-indigo-600">NombaLens</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-indigo-600">
+            NombaLens
+          </p>
           <p className="text-sm text-slate-600">Merchant analytics</p>
         </div>
 
         <div className="flex items-center gap-4">
           <nav className="flex items-center gap-4 text-sm font-medium text-slate-700">
-            <a href="/" className="rounded-2xl px-3 py-2 transition hover:bg-slate-100">
+            <Link
+              href="/"
+              className="rounded-2xl px-3 py-2 transition hover:bg-slate-100"
+            >
               Overview
-            </a>
-            <a href="/recovery" className="rounded-2xl px-3 py-2 transition hover:bg-slate-100">
+            </Link>
+            <a
+              href="/recovery"
+              className="rounded-2xl px-3 py-2 transition hover:bg-slate-100"
+            >
               Recovery
             </a>
-            <a href="/split" className="rounded-2xl px-3 py-2 transition hover:bg-slate-100">
+            <a
+              href="/split"
+              className="rounded-2xl px-3 py-2 transition hover:bg-slate-100"
+            >
               Split
             </a>
-            <a href="/analytics" className="rounded-2xl px-3 py-2 transition hover:bg-slate-100">
+            <a
+              href="/analytics"
+              className="rounded-2xl px-3 py-2 transition hover:bg-slate-100"
+            >
               Analytics
             </a>
           </nav>

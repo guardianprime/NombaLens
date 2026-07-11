@@ -1,5 +1,4 @@
 import {
-  boolean,
   integer,
   pgEnum,
   pgTable,
@@ -33,7 +32,9 @@ export const merchants = pgTable("merchants", {
   nombaClientId: varchar("nomba_client_id", { length: 255 }).notNull(),
   nombaSecret: varchar("nomba_secret", { length: 255 }).notNull(),
   email: varchar("email", { length: 255 }),
-  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
 });
 
 export const checkoutSessions = pgTable("checkout_sessions", {
@@ -46,7 +47,9 @@ export const checkoutSessions = pgTable("checkout_sessions", {
   amount: integer("amount").notNull(),
   currency: varchar("currency", { length: 10 }).default("NGN").notNull(),
   status: checkoutSessionStatusEnum("status").default("pending").notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
   completedAt: timestamp("completed_at", { withTimezone: true }),
 });
 
@@ -70,7 +73,9 @@ export const conversionEvents = pgTable("conversion_events", {
   }),
   paymentMethod: varchar("payment_method", { length: 64 }),
   eventType: conversionEventTypeEnum("event_type").notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
 });
 
 export const splitConfigs = pgTable("split_configs", {
@@ -80,5 +85,7 @@ export const splitConfigs = pgTable("split_configs", {
     .notNull(),
   subAccountId: varchar("sub_account_id", { length: 255 }).notNull(),
   percentage: integer("percentage").notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
 });

@@ -15,6 +15,7 @@
     "check:redis": "tsx src/scripts/checkRedis.ts",
     "check:nomba": "tsx src/scripts/checkNomba.ts",
     "db:migrate": "drizzle-kit migrate",
+     "db:seed": "tsx src/db/seed.ts",
     "test:webhook": "tsx src/scripts/testWebhook.ts",
     "test:recovery": "tsx src/scripts/testRecovery.ts"
   },
@@ -37,6 +38,7 @@
     "resend": "^6.16.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^10.5.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
